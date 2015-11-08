@@ -13,6 +13,8 @@ namespace Eppyjerk.AutoFixture.Emitter.Tests
 
         bool IsShort { get; }
         bool Diet { set; }
+
+        ICar FavoriteCar { get; set; }
     }
 
     public interface ICar
@@ -20,6 +22,8 @@ namespace Eppyjerk.AutoFixture.Emitter.Tests
         string Color { get; set; }
         int Doors { get; set; }
         string Name { get; set; }
+
+        IPerson Driver { get; set; }
     }
 
     public interface IPlane
@@ -27,5 +31,7 @@ namespace Eppyjerk.AutoFixture.Emitter.Tests
         int Propellers { get; set; }
         string Name { get; set; }
         decimal Wingspan { get; set; }
+
+        IPerson Pilot { get; set; }
     }
 }

@@ -11,6 +11,15 @@ namespace Eppyjerk.AutoFixture.Emitter.Tests
 {
     public class FixtureExtensionsSuite
     {
+        [Fact]
+        public void CreateObjectOfType_SimpleOne()
+        {
+            var fixture = new Fixture();
+            var actualObject = fixture.CreateObjectOfType<ICar>();
+
+            VerifyObjectOfType<ICar>(actualObject);
+        }
+
         [Theory]
         [InlineData(typeof(IAppDomainSetup))]
         [InlineData(typeof(IFixture))]
@@ -217,7 +226,7 @@ namespace Eppyjerk.AutoFixture.Emitter.Tests
         [Fact]
         public void CreateManyObjectsOfTypes_Performance()
         {
-            int count = 1000;
+            int count = 100;
             var fixture = new Fixture();
 
             var actualResults = fixture.CreateManyObjectsOfTypes(count, typeof(IPerson), typeof(ICar));

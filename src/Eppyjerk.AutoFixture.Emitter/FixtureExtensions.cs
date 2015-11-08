@@ -27,7 +27,9 @@ namespace Eppyjerk.AutoFixture.Emitter
 
             for (int i = 0; i < count; i++)
             {
-                results.Add(CreateObjectOfTypes(proxyGenerator, fixture, interfaceTypes));
+                // Creating a new recursionBuster per object because I want to stop recursion, but I want each object to get its own unique set of objects
+                Dictionary<Type, object> recursionBuster = new Dictionary<Type, object>();
+                results.Add(InternalCreateObjectOfTypes(proxyGenerator, fixture, interfaceTypes, recursionBuster));
             }
 
             return results;
@@ -63,11 +65,17 @@ namespace Eppyjerk.AutoFixture.Emitter
             ValidateTypes(interfaceTypes);
 
             var proxyGenerator = new ProxyGenerator();
+            Dictionary<Type, object> recursionBuster = new Dictionary<Type, object>();
 
-            return CreateObjectOfTypes(proxyGenerator, fixture, interfaceTypes);
+            return InternalCreateObjectOfTypes(proxyGenerator, fixture, interfaceTypes, recursionBuster);
         }
 
-        private static object CreateObjectOfTypes(ProxyGenerator proxyGenerator, IFixture fixture, Type[] interfaceTypes)
+
+
+
+
+
+        private static object InternalCreateObjectOfTypes(ProxyGenerator proxyGenerator, IFixture fixture, Type[] interfaceTypes, Dictionary<Type, object> recursionBuster)
         {
             Type firstType = interfaceTypes.First();
             Type[] otherTypes = new Type[0];
@@ -88,7 +96,30 @@ namespace Eppyjerk.AutoFixture.Emitter
             var specimen = new SpecimenContext(fixture);
             foreach (var p in properties)
             {
-                var value = specimen.Resolve(p.PropertyType);
+                object value = null;
+                string propertyName = p.Name;
+
+                if(p.PropertyType.IsValueType)
+                {
+                    value = specimen.Resolve(p.PropertyType);
+                }
+                else
+                {
+                    if (p.PropertyType.IsInterface)
+                    {
+                        if (recursionBuster.ContainsKey(p.PropertyType))
+                        {
+                            value = recursionBuster[p.PropertyType];
+                        }
+                        else
+                        {
+                            recursionBuster.Add(p.PropertyType, null);
+                            value = InternalCreateObjectOfTypes(proxyGenerator, fixture, new Type[] { p.PropertyType }, recursionBuster);
+                            recursionBuster[p.PropertyType] = value;
+                        }
+                    }
+                }
+
                 p.SetValue(result, value);
             }
 
