@@ -11,27 +11,29 @@ namespace Eppyjerk.AutoFixture.Emitter
     {
         public static IEnumerable<object> CreateManyObjectsOfType<T>(this IFixture fixture, int count)
         {
-            return fixture.CreateManyObjectsOfType(count, typeof(T));
-        }
-        public static IEnumerable<object> CreateManyObjectsOfType(this IFixture fixture, int count, Type interfaceTypes)
-        {
-            return Enumerable.Range(1, count).Select(i => fixture.CreateObjectOfTypes(interfaceTypes));
+            return fixture.CreateManyObjectsOfTypes(count, typeof(T));
         }
         public static IEnumerable<object> CreateManyObjectsOfTypes(this IFixture fixture, int count, params Type[] interfaceTypes)
         {
-            return Enumerable.Range(1, count).Select(i => fixture.CreateObjectOfTypes(interfaceTypes));
-        }
+            // TODO: Why doesn't this call CreateObjectOfTypes when interfaceTypes.Length == 0 ???
+            //return Enumerable.Range(1, count).Select(i => fixture.CreateObjectOfTypes(interfaceTypes));
 
 
-        public static object CreateObjectOfType<T>(this IFixture fixture)
-        {
-            return fixture.CreateObjectOfTypes(typeof(T));
+            List<object> results = new List<object>();
+
+            ValidateTypes(interfaceTypes);
+
+            var proxyGenerator = new ProxyGenerator();
+
+            for (int i = 0; i < count; i++)
+            {
+                results.Add(CreateObjectOfTypes(proxyGenerator, fixture, interfaceTypes));
+            }
+
+            return results;
         }
-        public static object CreateObjectOfType(this IFixture fixture, Type interfaceType)
-        {
-            return fixture.CreateObjectOfTypes(interfaceType);
-        }
-        public static object CreateObjectOfTypes(this IFixture fixture, params Type[] interfaceTypes)
+
+        private static void ValidateTypes(Type[] interfaceTypes)
         {
             if (interfaceTypes.Length == 0)
             {
@@ -39,8 +41,34 @@ namespace Eppyjerk.AutoFixture.Emitter
                 throw new Exception("Must have interface types");
             }
 
+            var grouped = from t in interfaceTypes
+                          group t by t.FullName into grp
+                          where grp.Count() > 1
+                          select grp;
+
+            if (grouped.Count() > 0)
+            {
+                //TODO: exception
+                throw new Exception("Cannot define type more than once");
+            }
+
+        }
+
+        public static object CreateObjectOfType<T>(this IFixture fixture)
+        {
+            return fixture.CreateObjectOfTypes(typeof(T));
+        }
+        public static object CreateObjectOfTypes(this IFixture fixture, params Type[] interfaceTypes)
+        {
+            ValidateTypes(interfaceTypes);
+
             var proxyGenerator = new ProxyGenerator();
 
+            return CreateObjectOfTypes(proxyGenerator, fixture, interfaceTypes);
+        }
+
+        private static object CreateObjectOfTypes(ProxyGenerator proxyGenerator, IFixture fixture, Type[] interfaceTypes)
+        {
             Type firstType = interfaceTypes.First();
             Type[] otherTypes = new Type[0];
             if (interfaceTypes.Length > 1)
@@ -65,7 +93,7 @@ namespace Eppyjerk.AutoFixture.Emitter
             }
 
             return result;
-        }
 
+        }
     }
 }

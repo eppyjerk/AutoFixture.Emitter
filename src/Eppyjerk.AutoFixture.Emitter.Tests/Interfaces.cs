@@ -4,6 +4,7 @@ namespace Eppyjerk.AutoFixture.Emitter.Tests
 {
     public interface IPerson
     {
+        string Name { get; set; }
         string FirstName { get; set; }
         string LastName { get; set; }
         int Age { get; set; }
@@ -25,5 +26,6 @@ namespace Eppyjerk.AutoFixture.Emitter.Tests
     {
         int Propellers { get; set; }
         string Name { get; set; }
+        decimal Wingspan { get; set; }
     }
 }

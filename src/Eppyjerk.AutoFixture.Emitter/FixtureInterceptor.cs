@@ -32,6 +32,17 @@ namespace Eppyjerk.AutoFixture.Emitter
                 {
                     invocation.ReturnValue = _propertyValues[fingerprint];
                 }
+                else
+                {
+                    if(invocation.Method.ReturnType.IsValueType)
+                    {
+                        invocation.ReturnValue = Activator.CreateInstance(invocation.Method.ReturnType);
+                    }
+                    else
+                    {
+                        invocation.ReturnValue = null;
+                    }
+                }
             }
 
         }
