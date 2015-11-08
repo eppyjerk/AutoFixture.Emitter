@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Ploeh.AutoFixture;
 using Xunit;
 
@@ -269,8 +267,11 @@ namespace Eppyjerk.AutoFixture.Emitter.Tests
 
             foreach (var p in properties)
             {
-                // No Assert, just try to read the values
                 object actualValue = p.GetValue(@object);
+                if(p.PropertyType == typeof(string))
+                {
+                    Assert.NotNull(actualValue);
+                }
             }
         }
     }

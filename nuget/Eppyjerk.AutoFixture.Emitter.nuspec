@@ -7,19 +7,19 @@
     <authors>Jonathan Kacprowicz</authors>
     <owners>Jonathan Kacprowicz</owners>
     <dependencies>
-      <dependency id="autofixture" version="3.36.0" />
-      <dependency id="castle.core" version="3.3.0" />
+      <dependency id="autofixture" version="3.0.1" />
+      <dependency id="castle.core" version="3.1.0" />
     </dependencies>
-    <description>AutoFixture Emitters asdf.asdf.asdf.asdf.asfd.</description>
+    <description>AutoFixture Emitters creates dynamic types and fills them with AutoFixture data. Commonly used to create mock payloads of data.</description>
     <projectUrl>https://github.com/eppyjerk/AutoFixture.Emitter</projectUrl>
     <licenseUrl>https://github.com/eppyjerk/AutoFixture.Emitter/blob/master/LICENCE.txt</licenseUrl>
     <language>en-US</language>
   </metadata>
   <files>
-    <file src="Eppyjerk.AutoFixture.Emitter.dll" target="lib\net40" />
-    <file src="Eppyjerk.AutoFixture.Emitter.pdb" target="lib\net40" />
-    <file src="Eppyjerk.AutoFixture.Emitter.XML" target="lib\net40" />
+    <file src="..\src\Eppyjerk.AutoFixture.Emitter\bin\debug\Eppyjerk.AutoFixture.Emitter.dll" target="lib\net40" />
+    <file src="..\src\Eppyjerk.AutoFixture.Emitter\bin\debug\Eppyjerk.AutoFixture.Emitter.pdb" target="lib\net40" />
     <!--
+    <file src="..\src\Eppyjerk.AutoFixture.Emitter\bin\debug\Eppyjerk.AutoFixture.Emitter.XML" target="lib\net40" />
         <file src="..\Src\AutoFixture\**\*.cs" target="src" />
         <file src="Install.ps1" target="tools" />
         -->

@@ -99,7 +99,7 @@ namespace Eppyjerk.AutoFixture.Emitter
                 object value = null;
                 string propertyName = p.Name;
 
-                if(p.PropertyType.IsValueType)
+                if(p.PropertyType.IsValueType || p.PropertyType == typeof(string))
                 {
                     value = specimen.Resolve(p.PropertyType);
                 }
